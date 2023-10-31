@@ -1,18 +1,34 @@
 import requests
+from datetime import datetime, date, timedelta
 
-departure_date = 9
-train_number = 27
+today_date = datetime.now().date()
 
-# she needs to arrive by 16:00
+# Calculate one year before the given date
+one_year_before = today_date - timedelta(days=365)  # Assuming a year has 365 days
 
-url = f"/api/v1/trains/{departure_date}/{train_number}"
 
-url = f"https://rata.digitraffic.fi/api/v1/trains/2020-01-01/27"
+# Create a list to store the dates
+all_dates = []
+
+# Generate all dates within the specified range
+current_date = one_year_before
+while current_date <= today_date:
+    all_dates.append(current_date)
+    current_date += timedelta(days=1)
+
+url = f"https://rata.digitraffic.fi/api/v1/trains/2022-01-01/27"
 x = requests.get(url).json()
 # print(x.json())
 
-for row in x[0].get("timeTableRows"):
-    # print(row)
-    # for y in row
-    if row.get("stationShortCode") == 'TPE':
-        print(row)
+train_data = []
+
+for day in all_dates[:10]:
+    url = f"https://rata.digitraffic.fi/api/v1/trains/{day}/27"
+    x = requests.get(url).json()
+    train_data.extend(x)
+
+
+for day in train_data:
+    for row in day.get("timeTableRows"):
+        if row.get("stationShortCode") == 'TPE' and row.get("type") == "ARRIVAL":
+            print(row)
