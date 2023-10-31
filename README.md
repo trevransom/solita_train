@@ -1,1 +1,1 @@
-# solita_train
+Predicting if passenger will reach their destination based on previous train information.
